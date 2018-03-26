@@ -1,3 +1,8 @@
+/**
+ * SERVIDOR NODE JS
+ */
+
+
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -10,34 +15,38 @@ app.use(bodyParser.json());
 
  //retorna a lista de autores
  var autores = [
-                          {id:'1',nome:'harold',email:'harold@gmail.com',senha:'1234'},
-                          {id:'2',nome:'joao',email:'joao@gmail.com',senha:'1234'},
-                          {id:'3',nome:'maria',email:'maria@gmail.com',senha:'1234'},
+                          {id:1,nome:'harold',email:'harold@gmail.com',senha:'1234'},
+                          {id:2,nome:'joao',email:'joao@gmail.com',senha:'1234'},
+                          {id:3,nome:'maria',email:'maria@gmail.com',senha:'1234'},
                         ];
               
+var nKey = 3;
 
-
-//definie a rota da API no localhost
+/**
+ * GET /api/autores
+ * Retorna com a lista de autores cadastrados no array
+ */
 app.get('/api/autores', (req, res) => {
     //retorna o resultado 
     res.send(autores);
-    
-
 });
 
 
-
+/**
+ * Post /api/autores 
+ * Inclui um novo autor no array
+ */
 app.post('/api/autores',function(request,response){
-    console.log('/api/autores');
-
-    console.log(request.body);
- 
-    autores.push(request.body);
-    console.log(autores);
-    //retorna o resultado 
-    response.send(autores);
     
+  nKey = nKey + 1;
 
+    var autor = {id:nKey,
+                 nome:request.body.nome,
+                 email:request.body.email,
+                 senha:request.body.senha}
+
+    autores.push(autor);
+    response.send(autores);
   });
 
 

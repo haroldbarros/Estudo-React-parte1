@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './css/pure-min.css';
 import './css/side-menu.css';
-import AutorBox from './views/AutorBox';
+import AutorBox from './views/Autor';
 
 
 class App extends Component {

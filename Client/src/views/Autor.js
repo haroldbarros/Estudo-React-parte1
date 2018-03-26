@@ -1,11 +1,65 @@
-import React, { Component } from 'react';
+/**
+ * Componentes relacionados a entidade de autores
+ */
+
+import React from 'react';
+import $ from 'jquery';
+import Axios from 'axios';
+import PubSub from 'pubsub-js';
 import '../css/pure-min.css';
 import '../css/side-menu.css';
 import InputCustomizado from '../componentes/InputCustomizado';
 import BotaoSubmitCustomizado from '../componentes/BotaoSubmitCustomizado';
 
 
-export class FormularioAutor extends Component{
+/**
+ * AutorBox = Retorna o cadastro e a listagem de autores
+ */
+export default class AutorBox extends React.Component{
+
+  constructor() {
+    super();    
+    this.state = {autores : [{id:1,nome:"harold",email:"harold@gmail",senha:"senha"}]}; 
+    this.AtualizaListagem = this.AtualizaListagem.bind(this)   
+   }
+
+
+  /**
+   * executa web services de autores
+   */
+  componentDidMount() {
+    
+    //chama para carregar os dados de autores
+    Axios.get('/api/autores/')
+      .then(response => {
+
+        console.log(response.data);
+        
+        //seta o array dos analistas
+        this.setState({autores:response.data});
+      })
+      
+      PubSub.subscribe('atualiza-lista-autores', function(topico,novaLista){
+        this.setState({autores:novaLista});
+      }.bind(this));
+  }       
+
+  AtualizaListagem(novoAutores){
+    this.setState({autores:novoAutores});
+  }
+
+    render() {
+      return(
+        <div>
+            <FormularioAutor/>
+            <TabelaAutores autores={this.state.autores}/>
+        </div>
+      );
+    }
+  }
+
+
+class FormularioAutor extends React.Component{
 
     constructor() {
         super();    
@@ -31,9 +85,7 @@ export class FormularioAutor extends Component{
    
     Axios.post('/api/autores/',  jsonData)
     .then(function (response) {
-      console.log(response);
-      console.log("enviado com sucesso");
-      this.setState({autores:response.data});
+     PubSub.publish('atualiza-lista-autores',response.data)
     }.bind(this))
     .catch(function (error) {
       console.log(error);
@@ -78,10 +130,11 @@ export class FormularioAutor extends Component{
 
 
 
-export class TabelaAutores extends Component {
+class TabelaAutores extends React.Component {
 
-  
-
+  constructor() {
+    super();    
+   }
 
 
     render() {
@@ -96,7 +149,7 @@ export class TabelaAutores extends Component {
                   </thead>
                   <tbody>
                       {
-                        this.state.props.autores.map(function(autor){
+                        this.props.autores.map(function(autor){
                           return (
                             <tr key={autor.id}>
                               <td>{autor.nome}</td>
