@@ -1,19 +1,22 @@
 /**
  * SERVIDOR NODE JS
+ * OBS: nao tem interação com banco apenas dados mokados
  */
-
 
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 const bodyParser = require('body-parser');
+const expressValidator = require('express-validator');
+const { check, validationResult } = require('express-validator/check');
+const { matchedData, sanitize } = require('express-validator/filter');
 
 
-
+//Configura os Midwares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
- //retorna a lista de autores
+ //lista de autores
  var autores = [
                           {id:1,nome:'harold',email:'harold@gmail.com',senha:'1234'},
                           {id:2,nome:'joao',email:'joao@gmail.com',senha:'1234'},
@@ -32,28 +35,47 @@ app.get('/api/autores', (req, res) => {
 });
 
 
+const EMPTY_STRING = ''
+
 /**
  * Post /api/autores 
  * Inclui um novo autor no array
  */
-app.post('/api/autores',function(request,response){
-    
+app.post('/api/autores', [
+  check('email')
+    .isEmail().withMessage('E-mail inválido'),
+  // General error messages can be given as a 2nd argument in the check APIs
+  check('senha', 'a senha deve ter no minimo 6 caracteres')
+    .isLength({ min: 6 }),
+  check('nome', 'nome deve ser preenchido')
+    .not().isEmpty(),
+
+ 
+
+  ], (req, res, next) => {
+    console.log(req.body.nome);
+  // Get the validation result whenever you want; see the Validation Result API for all options!
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log('houve erro');
+    var ListErrors = { errors: errors.mapped() }
+    console.log(ListErrors);
+    return res.status(422).json(ListErrors);
+  }
+
+  //incrementa a chave primária
   nKey = nKey + 1;
 
-    var autor = {id:nKey,
-                 nome:request.body.nome,
-                 email:request.body.email,
-                 senha:request.body.senha}
-
-    autores.push(autor);
-    response.send(autores);
-  });
+  //cria o objeto de autor com base nos dados que vieram no corpo do e-mail
+  var autor = {id:nKey,
+                nome:req.body.nome,
+                email:req.body.email,
+                senha:req.body.senha}
 
 
-
-
-app.get('/api/messages', (req, res) => {
-  res.send({ express: 'Este é um codigo do server em node' });
+  console.log('passou ok');
 });
+
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

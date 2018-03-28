@@ -1,15 +1,16 @@
 /**
  * Componentes relacionados a entidade de autores
  */
-
 import React from 'react';
 import $ from 'jquery';
 import Axios from 'axios';
 import PubSub from 'pubsub-js';
 import '../css/pure-min.css';
 import '../css/side-menu.css';
+import '../css/styles.css';
 import InputCustomizado from '../componentes/InputCustomizado';
 import BotaoSubmitCustomizado from '../componentes/BotaoSubmitCustomizado';
+import TratadorErros from './TratadorErros';
 
 
 /**
@@ -76,6 +77,7 @@ class FormularioAutor extends React.Component{
    * Envento de envio de dados do formulario
    */
   enviaForm(evento){
+
     //preventDefault: indicará quando não desejamos que um evento continue sendo propagado.
     evento.preventDefault();
     console.log("dados sendo enviados");
@@ -83,13 +85,18 @@ class FormularioAutor extends React.Component{
     //var jsonData = JSON.stringify({nome:this.state.nome,email:this.state.email,senha:this.state.senha});
     var jsonData = {nome:this.state.nome,email:this.state.email,senha:this.state.senha};
    
+    //executa o Post /api/autores/
     Axios.post('/api/autores/',  jsonData)
+    //caso ocorre com sucesso
     .then(function (response) {
+     //retorna com a nova lista e atualiza o estado
      PubSub.publish('atualiza-lista-autores',response.data)
     }.bind(this))
+    //caso ocorra erro
     .catch(function (error) {
-      console.log(error);
-      console.log("erro");
+      //chama a classe de tratamento de erro, passando todos os itens
+      new TratadorErros().publicaErros(error.response.data.errors);
+      console.log("TratadorErros");
     });
     
 

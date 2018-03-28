@@ -10,6 +10,7 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "express-validator": "^5.0.3",
     "jquery": "^3.3.1",
     "pubsub-js": "^1.6.0"
   },
