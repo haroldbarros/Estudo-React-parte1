@@ -22,7 +22,7 @@ app.use(bodyParser.json());
                           {id:2,nome:'joao',email:'joao@gmail.com',senha:'1234'},
                           {id:3,nome:'maria',email:'maria@gmail.com',senha:'1234'},
                         ];
-              
+
 var nKey = 3;
 
 /**
@@ -75,6 +75,30 @@ app.post('/api/autores', [
 
   console.log('passou ok');
 });
+
+
+
+
+
+
+//lista de autores
+var livros = [
+  {id:1,titulo:'livro AAA',preco:10.00,autorid:1,"autor":{id:1,nome:"harold"}},
+  {id:2,titulo:'livro BBB',preco:20.00,autorid:2,"autor":{id:2,nome:"joao"}},
+  {id:3,titulo:'livro CCC',preco:30.00,autorid:3,"autor":{id:3,nome:"maria"}},
+];
+
+var nKeyLivros = 3;
+
+/**
+* GET /api/autores
+* Retorna com a lista de autores cadastrados no array
+*/
+app.get('/api/livros', (req, res) => {
+//retorna o resultado 
+res.send(livros);
+});
+
 
 
 

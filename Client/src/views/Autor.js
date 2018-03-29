@@ -52,9 +52,15 @@ export default class AutorBox extends React.Component{
     render() {
       return(
         <div>
-            <FormularioAutor/>
-            <TabelaAutores autores={this.state.autores}/>
+        <div className="header">
+          <h1>Cadastro de autores</h1>
         </div>
+        <div className="content" id="content">                            
+          <FormularioAutor/>
+          <TabelaAutores autores={this.state.autores}/>        
+        </div>      
+
+      </div>
       );
     }
   }
@@ -118,19 +124,17 @@ class FormularioAutor extends React.Component{
 
   render() {
     return (
-
-    <div className="pure-form pure-form-aligned">
-        <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm} method="post">
-            <InputCustomizado label="Nome" id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome}/>                                              
-            <InputCustomizado label="E-mail"  id="email" type="email" name="email" value={this.state.email} onChange={this.setEmail}/>                                              
-            <InputCustomizado label="Senha" id="senha" type="password" name="senha" value={this.state.senha} onChange={this.setSenha}/>                                                  
-            <BotaoSubmitCustomizado label="Gravar"/>
-        </form>                   
-    </div>          
-
-    
-
-
+      <div className="pure-form pure-form-aligned">
+      <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm} method="post">
+        <InputCustomizado id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} label="Nome"/>                                              
+        <InputCustomizado id="email" type="email" name="email" value={this.state.email} onChange={this.setEmail} label="Email"/>                                              
+        <InputCustomizado id="senha" type="password" name="senha" value={this.state.senha} onChange={this.setSenha} label="Senha"/>                                                                      
+        <div className="pure-control-group">                                  
+          <label></label> 
+          <button type="submit" className="pure-button pure-button-primary">Gravar</button>                                    
+        </div>
+      </form>             
+    </div>  
     );
   }
 }
@@ -146,28 +150,28 @@ class TabelaAutores extends React.Component {
 
     render() {
         return (
-            <div>            
-                <table className="pure-table pure-table-striped">
-                  <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>email</th>
+          <div>            
+          <table className="pure-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                this.props.autores.map(function(autor){
+                  return (
+                    <tr key={autor.id}>
+                      <td>{autor.nome}</td>
+                      <td>{autor.email}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                      {
-                        this.props.autores.map(function(autor){
-                          return (
-                            <tr key={autor.id}>
-                              <td>{autor.nome}</td>
-                              <td>{autor.email}</td>
-                            </tr>
-                          );
-                        })
-                      }                   
-                  </tbody>
-                </table> 
-            </div>             
+                  );
+                })
+              }
+            </tbody>
+          </table> 
+        </div>          
            
         ); 
     }
